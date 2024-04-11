@@ -1,0 +1,75 @@
+* {
+  box-sizing: border-box;
+}
+
+.todo-container {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+  background: linear-gradient(225deg, #96f2fb, #00244c);
+  .todo-wrapper {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    .todo-header {
+      background-color: #fff;
+      width: 100%;
+      border-radius: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 2rem;
+      padding: 1rem;
+
+      input {
+        height: 35px;
+        border: solid #000 2px;
+        border-radius: 3rem;
+        flex: 75%;
+        padding: 0 1rem;
+        font-size: 18px;
+      }
+      button {
+        background-color: #00244c;
+        color: #fff;
+        height: 35px;
+        flex: 25%;
+        border-radius: 10rem;
+        font-size: 18px;
+      }
+    }
+    .todo-body {
+      background-color: #fff;
+      width: 100%;
+      min-height: 8rem;
+      padding: 1rem;
+      border-radius: 1rem;
+      .todo-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 5px 0;
+        div {
+          font-size: 18px;
+        }
+        button {
+          font-size: 18px;
+        }
+        input {
+          display: inline-block;
+          width: 20px;
+          height: 20px;
+          border: 2px solid #003150;
+          cursor: pointer;
+          margin-right: .5rem;
+        }
+      }
+    }
+  }
+}
