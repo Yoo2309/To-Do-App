@@ -47,9 +47,11 @@
     .todo-body {
       background-color: #fff;
       width: 100%;
-      min-height: 8rem;
+      min-height: 10rem;
+      max-height: 70vh;
       padding: 1rem;
       border-radius: 1rem;
+      overflow-y: auto;
       .todo-item {
         display: flex;
         justify-content: space-between;

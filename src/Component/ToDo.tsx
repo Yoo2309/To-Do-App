@@ -6,7 +6,7 @@ type Task = {
   state: boolean;
 };
 
-function ToDo() {
+const ToDo = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const input_task = useRef<HTMLInputElement | null>(null);
 
@@ -17,16 +17,17 @@ function ToDo() {
     }
   };
   const handleDeleteTask = (index: number) => {
-    let temp_task = [...tasks];
-    temp_task = temp_task.filter(
-      (task_item, index_item) => index_item !== index
-    );
-    setTasks(temp_task);
+    setTasks(tasks.filter((task_item, index_item) => index_item !== index));
   };
   const handleChangestate = (index: number) => {
-    const updatedTasks = [...tasks];
-    updatedTasks[index].state = !updatedTasks[index].state;
-    setTasks(updatedTasks);
+    setTasks((prevTasks) => {
+      return prevTasks.map((task, i) => {
+        if (i === index) {
+          return { ...task, state: !task.state };
+        }
+        return task;
+      });
+    });
   };
 
   useEffect(() => {
@@ -99,6 +100,6 @@ function ToDo() {
       </div>
     </div>
   );
-}
+};
 
 export default ToDo;
