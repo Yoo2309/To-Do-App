@@ -6,7 +6,7 @@ type Task = {
   state: boolean;
 };
 
-const ToDo = () => {
+const ToDoCustom = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const input_task = useRef<HTMLInputElement | null>(null);
 
@@ -102,4 +102,4 @@ const ToDo = () => {
   );
 };
 
-export default ToDo;
+export default ToDoCustom;
