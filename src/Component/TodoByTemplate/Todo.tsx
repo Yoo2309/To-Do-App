@@ -14,6 +14,11 @@ type EditState = {
   id: string;
   edit_value: string;
 };
+enum FilterOption {
+  "Completed" = 1,
+  "Active" = -1,
+  "All" = 0,
+}
 
 const Todo = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -30,7 +35,7 @@ const Todo = () => {
       setTasks([
         ...tasks,
         {
-          id: Math.random().toString(36),
+          id: Date.now().toString(),
           content: input_task.current.value,
           state: false,
         },
@@ -82,13 +87,13 @@ const Todo = () => {
 
   useEffect(() => {
     //update current tasks on display after filtering
-    if (filter === -1) {
+    if (filter === FilterOption.Active) {
       setCurentTasks(
         tasks.filter((task) => {
           return !task.state;
         })
       );
-    } else if (filter === 1) {
+    } else if (filter === FilterOption.Completed) {
       setCurentTasks(
         tasks.filter((task) => {
           return task.state;
@@ -120,7 +125,7 @@ const Todo = () => {
       }
     }
   }, [edit_task]);
-console.log("render")
+
   return (
     <div className="app-container">
       <div className="todo-container">
@@ -213,25 +218,31 @@ console.log("render")
           </div>
           <div className="todo-menus">
             <span
-              className={`todo-menu-item ${filter === 0 ? "active" : ""}`}
+              className={`todo-menu-item ${
+                filter === FilterOption.All ? "active" : ""
+              }`}
               onClick={() => {
-                setFilter(0);
+                setFilter(FilterOption.All);
               }}
             >
               All
             </span>
             <span
-              className={`todo-menu-item ${filter === -1 ? "active" : ""}`}
+              className={`todo-menu-item ${
+                filter === FilterOption.Active ? "active" : ""
+              }`}
               onClick={() => {
-                setFilter(-1);
+                setFilter(FilterOption.Active);
               }}
             >
               Active
             </span>
             <span
-              className={`todo-menu-item ${filter === 1 ? "active" : ""}`}
+              className={`todo-menu-item ${
+                filter === FilterOption.Completed ? "active" : ""
+              }`}
               onClick={() => {
-                setFilter(1);
+                setFilter(FilterOption.Completed);
               }}
             >
               Complete
