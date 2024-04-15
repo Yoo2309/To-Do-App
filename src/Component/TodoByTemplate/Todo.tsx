@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useId } from "react";
 import "./to-do.css";
 import black_stick from "../../assets/black-tick.svg";
 import delete_icon from "../../assets/delete.svg";
@@ -6,37 +6,65 @@ import edit_icon from "../../assets/edit.svg";
 import green_stick from "../../assets/green-tick.svg";
 
 type Task = {
+  id: string;
   content: string;
   state: boolean;
+};
+type EditState = {
+  id: string;
+  edit_value: string;
 };
 
 const Todo = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [current_tasks, setCurentTasks] = useState<Task[]>([]);
   const [filter, setFilter] = useState<number>(0);
-  const [edit_task, setEditTask] = useState<number>(-1);
-  const [edit_value, setEditValue] = useState<string>("");
+  const [edit_task, setEditTask] = useState<EditState>({
+    id: "",
+    edit_value: "",
+  });
   const input_task = useRef<HTMLInputElement | null>(null);
 
   const handleAddTask = () => {
     if (input_task.current && input_task.current.value.trim() !== "") {
-      setTasks([...tasks, { content: input_task.current.value, state: false }]);
+      setTasks([
+        ...tasks,
+        {
+          id: Math.random().toString(36),
+          content: input_task.current.value,
+          state: false,
+        },
+      ]);
       input_task.current.value = "";
     }
+    if (input_task.current) {
+      input_task.current.focus();
+    }
   };
-  const handleDeleteTask = (index: number) => {
-    setTasks(tasks.filter((task_item, index_item) => index_item !== index));
+
+  const handleDeleteTask = (id: string) => {
+    if (tasks.length === 1) {
+      localStorage.removeItem("tasks");
+    }
+    setTasks(tasks.filter((task_item, index_item) => task_item.id !== id));
   };
-  const handleEditTask = (index: number) => {
+
+  const handleEditTask = (id: string) => {
     setTasks((prevTasks) => {
       return prevTasks.map((task, i) => {
-        if (i === index) {
-          return { ...task, content: edit_value };
+        if (task.id === id) {
+          return { ...task, content: edit_task.edit_value };
         }
         return task;
       });
     });
-    setEditValue("");
+    //reset edit state
+    setEditTask({
+      id: "",
+      edit_value: "",
+    });
   };
+
   const handleChangestate = (index: number) => {
     setTasks((prevTasks) => {
       return prevTasks.map((task, i) => {
@@ -49,27 +77,52 @@ const Todo = () => {
   };
 
   useEffect(() => {
-    console.log(tasks);
-    if (tasks.length > 0) {
+    //store
+    if (tasks?.length) {
       localStorage.setItem("tasks", JSON.stringify(tasks));
     }
   }, [tasks]);
 
   useEffect(() => {
-    if (edit_task >= 0) {
-      const element = document.getElementById(`edit_${edit_task}`);
+    //update current tasks on display after filtering
+    if (filter === -1) {
+      setCurentTasks(
+        tasks.filter((task) => {
+          return !task.state;
+        })
+      );
+    } else if (filter === 1) {
+      setCurentTasks(
+        tasks.filter((task) => {
+          return task.state;
+        })
+      );
+    } else {
+      setCurentTasks(tasks);
+    }
+  }, [tasks, filter]);
+
+  useEffect(() => {
+    //get data from local storage
+    const storage = localStorage.getItem("tasks");
+    if (storage?.length) {
+      setTasks(JSON.parse(storage));
+    }
+    //focus input
+    if (input_task.current) {
+      input_task.current.focus();
+    }
+  }, []);
+
+  useEffect(() => {
+    //focus on edited element
+    if (edit_task.id !== "") {
+      const element = document.getElementById(`${edit_task.id}`);
       if (element) {
         element.focus();
       }
     }
   }, [edit_task]);
-
-  useEffect(() => {
-    const storage = localStorage.getItem("tasks");
-    if (storage) {
-      setTasks(JSON.parse(storage));
-    }
-  }, []);
 
   return (
     <div className="app-container">
@@ -84,18 +137,11 @@ const Todo = () => {
           </form>
         </div>
         <div className="todo-list-container">
-          {tasks ? (
-            tasks.map((task, index) => {
+          {current_tasks &&
+            current_tasks.map((task, index) => {
               return (
-                <div className="todo-list-wrapper">
-                  <div
-                    className={`todo-item-container ${
-                      (filter === 1 && task.state === false) ||
-                      (filter === -1 && task.state === true)
-                        ? "todo-hidden-item"
-                        : ""
-                    }`}
-                  >
+                <div key={index} className={`todo-list-wrapper`}>
+                  <div className={`todo-item-container `}>
                     <div className="todo-item-toggle">
                       <img
                         src={task.state ? green_stick : black_stick}
@@ -105,20 +151,42 @@ const Todo = () => {
                         alt="tick"
                       />
                     </div>
-                    <div
+                    <input
                       className={`todo-item-content ${
                         task.state ? "completed" : ""
                       }`}
-                    >
-                      {task.content}
-                    </div>
+                      disabled={task.id !== edit_task.id}
+                      onChange={(e) => {
+                        setEditTask({
+                          ...edit_task,
+                          edit_value: e.currentTarget.value,
+                        });
+                      }}
+                      onBlur={() => {
+                        setEditTask({
+                          id: "",
+                          edit_value: "",
+                        });
+                      }}
+                      value={
+                        task.id === edit_task.id
+                          ? edit_task.edit_value
+                          : task.content
+                      }
+                      id={`${task.id}`}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          handleEditTask(task.id);
+                        }
+                      }}
+                    ></input>
                     <div className="todo-item-options">
                       <div className="icon-btn">
                         <img
                           src={edit_icon}
                           alt="edit"
-                          onClick={() => {
-                            setEditTask(index);
+                          onClick={(e) => {
+                            setEditTask({ ...edit_task, id: task.id });
                           }}
                         />
                       </div>
@@ -127,43 +195,20 @@ const Todo = () => {
                           src={delete_icon}
                           alt="close"
                           onClick={() => {
-                            handleDeleteTask(index);
+                            handleDeleteTask(task.id);
                           }}
                         />
                       </div>
                     </div>
                   </div>
-                  <div
-                    className={`${
-                      edit_task === index ? "" : "todo-hidden-item"
-                    }`}
-                    style={{paddingTop: 10}}
-                  >
-                    <input
-                      onChange={(e) => {
-                        setEditValue(e.currentTarget.value);
-                      }}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          handleEditTask(index);
-                        }
-                      }}
-                      onBlur={() => {
-                        setEditTask(-1);
-                      }}
-                      value={edit_value}
-                      id={`edit_${index}`}
-                    ></input>
-                  </div>
                 </div>
               );
-            })
-          ) : (
-            <></>
-          )}
+            })}
         </div>
         <div className="todo-footer-container">
-          <div className="todo-count">3 items left</div>
+          <div className="todo-count">
+            {`${current_tasks.length} items left`}
+          </div>
           <div className="todo-menus">
             <span
               className={`todo-menu-item ${filter === 0 ? "active" : ""}`}

@@ -29,7 +29,7 @@ body {
   border-radius: 8px;
 }
 
-.todo-form-container input {
+.todo-container input {
   color: #4d4d4d;
   font-size: 24px;
   font-weight: 300;
@@ -39,6 +39,7 @@ body {
   height: 33px;
   outline: none;
   border: none;
+  background-color: #fff;
 }
 
 .todo-list-container {
