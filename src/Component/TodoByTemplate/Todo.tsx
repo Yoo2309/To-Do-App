@@ -18,7 +18,7 @@ type EditState = {
 const Todo = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [current_tasks, setCurentTasks] = useState<Task[]>([]);
-  const [filter, setFilter] = useState<number>(0);
+  const [filter, setFilter] = useState<number>();
   const [edit_task, setEditTask] = useState<EditState>({
     id: "",
     edit_value: "",
@@ -36,9 +36,6 @@ const Todo = () => {
         },
       ]);
       input_task.current.value = "";
-    }
-    if (input_task.current) {
-      input_task.current.focus();
     }
   };
 
@@ -123,16 +120,21 @@ const Todo = () => {
       }
     }
   }, [edit_task]);
-
+console.log("render")
   return (
     <div className="app-container">
       <div className="todo-container">
         <div className="todo-form-container">
-          <form onSubmit={handleAddTask}>
+          <form>
             <input
               type="text"
               placeholder="What need to be done?"
               ref={input_task}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleAddTask();
+                }
+              }}
             />
           </form>
         </div>
