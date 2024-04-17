@@ -1,26 +1,24 @@
-import { Task, FilterOption } from "../Component/ToDoRedux/ToDoRedux";
-
-
+import { FilterOption, Task, ActionType } from "../types/Type";
 
 type AddAction = {
-  type: "ADD_TASK";
+  type: ActionType.ADD_TASK;
   payload: Task;
 };
 
 type DeleteAction = {
-  type: "DELETE_TASK";
+  type: ActionType.DELETE_TASK; 
   payload: string;
 };
 type EditAction = {
-  type: "EDIT_TASK";
+  type: ActionType.EDIT_TASK;
   payload: { id: string; content: string };
 };
 type ChangeStateAction = {
-  type: "CHANGE_STATE_TASK";
+  type: ActionType.CHANGE_STATE_TASK;
   payload: string;
 };
 type Filter = {
-  type: "FILTER_TASK";
+  type: ActionType.FILTER_TASK;
   payload: FilterOption;
 };
 
@@ -32,11 +30,12 @@ export type Action =
   | Filter;
 
 // Hàm action helper
-const createAction = (type: string) => (payload: {}) => ({ type, payload });
+const createAction = (type: ActionType) => (payload: {}) => ({ type, payload });
 
 // Actions
-export const add_task = createAction("ADD_TASK");
-export const delete_task = createAction("DELETE_TASK");
-export const edit_task = createAction("EDIT_TASK");
-export const change_state_task = createAction("CHANGE_STATE_TASK");
-export const filter = createAction("FILTER_TASK");
+export const add_task = createAction(ActionType.ADD_TASK);
+export const delete_task = createAction(ActionType.DELETE_TASK);
+export const edit_task = createAction(ActionType.EDIT_TASK);
+export const change_state_task = createAction(ActionType.CHANGE_STATE_TASK);
+export const filter = createAction(ActionType.FILTER_TASK);
+  

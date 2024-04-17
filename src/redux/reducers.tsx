@@ -1,6 +1,6 @@
 // reducers.ts
 import { Action } from "./actions";
-import { Task, ToDo, FilterOption } from "../Component/ToDoRedux/ToDoRedux";
+import { ToDo, FilterOption, Task, ActionType } from "../types/Type";
 
 const loadStateFromStorage = (): ToDo => {
   //get data from localstorege
@@ -40,14 +40,14 @@ const FilterTasks = (filter_opt: FilterOption, tasks: Task[]) => {
 
 export const todoReducer = (state = initialTask, action: Action) => {
   switch (action.type) {
-    case "ADD_TASK":
+    case ActionType.ADD_TASK:
       const add_tasks = [...state.tasks, action.payload];
       return {
         ...state,
         tasks: add_tasks,
         current_tasks: FilterTasks(state.filter_opt, add_tasks),
       };
-    case "DELETE_TASK":
+    case ActionType.DELETE_TASK:
       console.log(action.payload);
       const delete_tasks = state.tasks.filter(
         (task) => task.id !== action.payload
@@ -57,7 +57,7 @@ export const todoReducer = (state = initialTask, action: Action) => {
         tasks: delete_tasks,
         current_tasks: FilterTasks(state.filter_opt, delete_tasks),
       };
-    case "EDIT_TASK":
+    case ActionType.EDIT_TASK:
       const edit_tasks = state.tasks.map((task) =>
         task.id === action.payload.id
           ? { ...task, content: action.payload.content }
@@ -68,7 +68,7 @@ export const todoReducer = (state = initialTask, action: Action) => {
         tasks: edit_tasks,
         current_tasks: FilterTasks(state.filter_opt, edit_tasks),
       };
-    case "CHANGE_STATE_TASK":
+    case ActionType.CHANGE_STATE_TASK:
       const change_state_tasks = state.tasks.map((task) =>
         task.id === action.payload ? { ...task, state: !task.state } : task
       );
@@ -77,7 +77,7 @@ export const todoReducer = (state = initialTask, action: Action) => {
         tasks: change_state_tasks,
         current_tasks: FilterTasks(state.filter_opt, change_state_tasks),
       };
-    case "FILTER_TASK":
+    case ActionType.FILTER_TASK:
       return {
         ...state,
         current_tasks: FilterTasks(action.payload, state.tasks),

@@ -12,30 +12,10 @@ import {
   change_state_task,
   filter,
 } from "../../redux/actions";
-
-export type Task = {
-  id: string;
-  content: string;
-  state: boolean;
-};
-export type ToDo = {
-  tasks: Task[];
-  current_tasks: Task[];
-  filter_opt: FilterOption;
-};
-type EditState = {
-  id: string;
-  edit_value: string;
-};
-export enum FilterOption {
-  "Completed" = 1,
-  "Active" = -1,
-  "All" = 0,
-}
+import { ToDo, FilterOption, Task, EditState } from "../../types/Type";
 
 const TodoRedux = () => {
   const dispatch = useDispatch();
-  const tasks: Task[] = useSelector((state: ToDo) => state.tasks);
   const current_tasks: Task[] = useSelector(
     (state: ToDo) => state.current_tasks
   );
@@ -78,7 +58,7 @@ const TodoRedux = () => {
     dispatch(change_state_task(id));
   };
 
-  console.log(current_tasks)
+  console.log(current_tasks);
   return (
     <div className="app-container">
       <div className="todo-container">
@@ -101,73 +81,72 @@ const TodoRedux = () => {
           </form>
         </div>
         <div className="todo-list-container">
-          {
-            current_tasks?.map((task) => {
-              return (
-                <div key={task.id} className={`todo-list-wrapper`}>
-                  <div className={`todo-item-container `}>
-                    <div className="todo-item-toggle">
+          {current_tasks?.map((task) => {
+            return (
+              <div key={task.id} className={`todo-list-wrapper`}>
+                <div className={`todo-item-container `}>
+                  <div className="todo-item-toggle">
+                    <img
+                      src={task.state ? green_stick : black_stick}
+                      onClick={() => {
+                        handleChangestate(task.id);
+                      }}
+                      alt="tick"
+                    />
+                  </div>
+                  <input
+                    className={`todo-item-content ${
+                      task.state ? "completed" : ""
+                    }`}
+                    disabled={task.id !== edited_task.id}
+                    onChange={(e) => {
+                      setEditTask({
+                        ...edited_task,
+                        edit_value: e.currentTarget.value,
+                      });
+                    }}
+                    onBlur={() => {
+                      setEditTask({
+                        id: "",
+                        edit_value: "",
+                      });
+                    }}
+                    value={
+                      task.id === edited_task.id
+                        ? edited_task.edit_value
+                        : task.content
+                    }
+                    id={`${task.id}`}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        handleEditTask(task.id);
+                      }
+                    }}
+                  ></input>
+                  <div className="todo-item-options">
+                    <div className="icon-btn">
                       <img
-                        src={task.state ? green_stick : black_stick}
-                        onClick={() => {
-                          handleChangestate(task.id);
+                        src={edit_icon}
+                        alt="edit"
+                        onClick={(e) => {
+                          setEditTask({ ...edited_task, id: task.id });
                         }}
-                        alt="tick"
                       />
                     </div>
-                    <input
-                      className={`todo-item-content ${
-                        task.state ? "completed" : ""
-                      }`}
-                      disabled={task.id !== edited_task.id}
-                      onChange={(e) => {
-                        setEditTask({
-                          ...edited_task,
-                          edit_value: e.currentTarget.value,
-                        });
-                      }}
-                      onBlur={() => {
-                        setEditTask({
-                          id: "",
-                          edit_value: "",
-                        });
-                      }}
-                      value={
-                        task.id === edited_task.id
-                          ? edited_task.edit_value
-                          : task.content
-                      }
-                      id={`${task.id}`}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          handleEditTask(task.id);
-                        }
-                      }}
-                    ></input>
-                    <div className="todo-item-options">
-                      <div className="icon-btn">
-                        <img
-                          src={edit_icon}
-                          alt="edit"
-                          onClick={(e) => {
-                            setEditTask({ ...edited_task, id: task.id });
-                          }}
-                        />
-                      </div>
-                      <div className="icon-btn">
-                        <img
-                          src={delete_icon}
-                          alt="close"
-                          onClick={() => {
-                            handleDeleteTask(task.id);
-                          }}
-                        />
-                      </div>
+                    <div className="icon-btn">
+                      <img
+                        src={delete_icon}
+                        alt="close"
+                        onClick={() => {
+                          handleDeleteTask(task.id);
+                        }}
+                      />
                     </div>
                   </div>
                 </div>
-              );
-            })}
+              </div>
+            );
+          })}
         </div>
         <div className="todo-footer-container">
           <div className="todo-count">
