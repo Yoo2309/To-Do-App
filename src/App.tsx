@@ -1,12 +1,9 @@
-import React from "react";
-import ToDo from "./Component/TodoByTemplate/Todo";
-import ToDoCustom from "./Component/CustomTodo/ToDo";
+import TodoRedux from "./Component/ToDoRedux/ToDoRedux";
 
 function App() {
   return (
     <div className="App">
-      <ToDo />
-      {/* <ToDoCustom/> */}
+      <TodoRedux/>
     </div>
   );
 }
