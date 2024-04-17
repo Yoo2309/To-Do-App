@@ -2,7 +2,7 @@
 import { Action } from "./actions";
 import { ToDo, FilterOption, Task, ActionType } from "../types/Type";
 
-const loadStateFromStorage = (): ToDo => {
+export const loadStateFromStorage = (): ToDo => {
   //get data from localstorege
   try {
     const stored_tasks = localStorage.getItem("tasks");
@@ -17,14 +17,14 @@ const loadStateFromStorage = (): ToDo => {
   }
 };
 
-const initialTask: ToDo = {
+export const initialTask: ToDo = {
   //set init state
   tasks: loadStateFromStorage().tasks,
   current_tasks: loadStateFromStorage().current_tasks,
   filter_opt: loadStateFromStorage().filter_opt,
 };
 
-const FilterTasks = (filter_opt: FilterOption, tasks: Task[]) => {
+export const FilterTasks = (filter_opt: FilterOption, tasks: Task[]) => {
   if (filter_opt === FilterOption.Active) {
     return tasks.filter((task) => {
       return !task.state;
@@ -48,7 +48,6 @@ export const todoReducer = (state = initialTask, action: Action) => {
         current_tasks: FilterTasks(state.filter_opt, add_tasks),
       };
     case ActionType.DELETE_TASK:
-      console.log(action.payload);
       const delete_tasks = state.tasks.filter(
         (task) => task.id !== action.payload
       );

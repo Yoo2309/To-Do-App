@@ -5,23 +5,24 @@ import black_stick from "../../assets/black-tick.svg";
 import delete_icon from "../../assets/delete.svg";
 import edit_icon from "../../assets/edit.svg";
 import green_stick from "../../assets/green-tick.svg";
+import { FilterOption, EditState } from "../../types/Type";
 import {
-  add_task,
-  delete_task,
-  edit_task,
-  change_state_task,
-  filter,
-} from "../../redux/actions";
-import { ToDo, FilterOption, Task, EditState } from "../../types/Type";
-
-const TodoRedux = () => {
+  add_tasks,
+  edit_tasks,
+  delete_tasks,
+  change_state_tasks,
+  filter_tasks,
+} from "../../redux/slices";
+import { RootState } from "../../redux/store";
+const TodoReduxToolkit = () => {
   const dispatch = useDispatch();
-  const current_tasks: Task[] = useSelector(
-    (state: ToDo) => state.current_tasks
+  const current_tasks = useSelector(
+    (state: RootState) => state.persistedReducer.current_tasks
   );
-  const filter_opt: FilterOption = useSelector(
-    (state: ToDo) => state.filter_opt
+  const filter_opt = useSelector(
+    (state: RootState) => state.persistedReducer.filter_opt
   );
+
   const [edited_task, setEditTask] = useState<EditState>({
     id: "",
     edit_value: "",
@@ -32,7 +33,7 @@ const TodoRedux = () => {
   const handleAddTask = () => {
     if (input_task.current && input_task.current.value.trim() !== "") {
       dispatch(
-        add_task({
+        add_tasks({
           id: Date.now().toString(),
           content: input_task.current.value.trim(),
           state: false,
@@ -43,11 +44,11 @@ const TodoRedux = () => {
   };
 
   const handleDeleteTask = (id: string) => {
-    dispatch(delete_task(id));
+    dispatch(delete_tasks(id));
   };
 
   const handleEditTask = (id: string) => {
-    dispatch(edit_task({ id: id, content: edited_task.edit_value }));
+    dispatch(edit_tasks({ id: id, content: edited_task.edit_value }));
     setEditTask({
       id: "",
       edit_value: "",
@@ -55,7 +56,7 @@ const TodoRedux = () => {
   };
 
   const handleChangestate = (id: string) => {
-    dispatch(change_state_task(id));
+    dispatch(change_state_tasks(id));
   };
 
   useEffect(() => {
@@ -167,7 +168,7 @@ const TodoRedux = () => {
                 filter_opt === FilterOption.All ? "active" : ""
               }`}
               onClick={() => {
-                dispatch(filter(FilterOption.All));
+                dispatch(filter_tasks(FilterOption.All));
               }}
             >
               All
@@ -177,7 +178,7 @@ const TodoRedux = () => {
                 filter_opt === FilterOption.Active ? "active" : ""
               }`}
               onClick={() => {
-                dispatch(filter(FilterOption.Active));
+                dispatch(filter_tasks(FilterOption.Active));
               }}
             >
               Active
@@ -187,7 +188,7 @@ const TodoRedux = () => {
                 filter_opt === FilterOption.Completed ? "active" : ""
               }`}
               onClick={() => {
-                dispatch(filter(FilterOption.Completed));
+                dispatch(filter_tasks(FilterOption.Completed));
               }}
             >
               Complete
@@ -198,4 +199,4 @@ const TodoRedux = () => {
     </div>
   );
 };
-export default TodoRedux;
+export default TodoReduxToolkit;

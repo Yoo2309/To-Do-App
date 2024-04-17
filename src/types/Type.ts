@@ -13,14 +13,14 @@ export type EditState = {
   edit_value: string;
 };
 export enum FilterOption {
-  "Completed" = 1,
-  "Active" = -1,
-  "All" = 0,
+  Completed = 1,
+  Active = -1,
+  All = 0,
 }
 export enum ActionType {
-  "ADD_TASK" = "ADD_TASK",
-  "DELETE_TASK" = "DELETE_TASK",
-  "EDIT_TASK" = "EDIT_TASK",
-  "CHANGE_STATE_TASK" = "CHANGE_STATE_TASK",
-  "FILTER_TASK" = "FILTER_TASK"
+  ADD_TASK = "ADD_TASK",
+  DELETE_TASK = "DELETE_TASK",
+  EDIT_TASK = "EDIT_TASK",
+  CHANGE_STATE_TASK = "CHANGE_STATE_TASK",
+  FILTER_TASK = "FILTER_TASK"
 }

@@ -31,7 +31,6 @@ const ToDoCustom = () => {
   };
 
   useEffect(() => {
-    console.log(tasks);
     if (tasks.length > 0) {
       localStorage.setItem("tasks", JSON.stringify(tasks));
     }
