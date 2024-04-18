@@ -23,5 +23,12 @@ export const store_toolkit = configureStore({
   reducer: { persistedReducer },
 });
 export const persistor = persistStore(store_toolkit);
-// Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store_toolkit.getState>;
+export type AppDispatch = typeof store_toolkit.dispatch
+
+//redux-toolkit-API store
+export const store_toolkit_API = configureStore({
+  reducer: { todoToolkitReducer },
+});
+export type RootStateAPI = ReturnType<typeof store_toolkit_API.getState>;
+export type AppDispatchAPI = typeof store_toolkit_API.dispatch

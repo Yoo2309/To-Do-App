@@ -12,16 +12,17 @@ import {
   delete_tasks,
   change_state_tasks,
   filter_tasks,
+  fetchTasks,
 } from "../../redux/slices";
-import { RootState } from "../../redux/store";
+import { RootStateAPI, AppDispatchAPI } from "../../redux/store";
 const TodoReduxToolkit = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatchAPI>();
   const current_tasks = useSelector(
-    (state: RootState) => state.persistedReducer.current_tasks
+    (state: RootStateAPI) => state.todoToolkitReducer.current_tasks
   );
   const filter_opt = useSelector(
-    (state: RootState) => state.persistedReducer.filter_opt
-  );  
+    (state: RootStateAPI) => state.todoToolkitReducer.filter_opt
+  );
 
   const [edited_task, setEditTask] = useState<EditState>({
     id: "",
@@ -51,7 +52,7 @@ const TodoReduxToolkit = () => {
     dispatch(edit_tasks({ id: id, content: edited_task.edit_value }));
     setEditTask({
       id: "",
-      edit_value: "", 
+      edit_value: "",
     });
   };
 
@@ -68,6 +69,10 @@ const TodoReduxToolkit = () => {
       }
     }
   }, [edited_task]);
+
+  useEffect(() => {
+    dispatch(fetchTasks());
+  }, []);
 
   return (
     <div className="app-container">
