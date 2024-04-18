@@ -24,3 +24,9 @@ export enum ActionType {
   CHANGE_STATE_TASK = "CHANGE_STATE_TASK",
   FILTER_TASK = "FILTER_TASK"
 }
+export type APITask = {
+  userId: number;
+  id: number;
+  title: string;
+  completed: boolean;
+};

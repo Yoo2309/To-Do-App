@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { FilterTasks } from "./reducers";
-import { FilterOption, Task, ToDo } from "../types/Type";
+import { FilterOption, Task, ToDo, APITask } from "../types/Type";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 const initialTask: ToDo = {
@@ -93,20 +93,13 @@ export const fetchTasks = createAsyncThunk<Task[]>(
       "https://jsonplaceholder.typicode.com/todos?userId=1&fbclid=IwZXh0bgNhZW0CMTAAAR3X63ah1YHccZ0QOOdnpMeVmbTBE3ouoIdd1fqoKr231dZTQ8_DVKWT_FM_aem_AcTxVflL5FrRfYUn3wp0Lt7_7rdoMXiTVaAG9Rph3m2jI7UOT-ygcQ-U38r_4OhEgHODHNXh0gBnsP3ufW4iaRl6"
     );
     let data = await response.json();
-    return data.map(
-      (task: {
-        userId: number;
-        id: number;
-        title: string;
-        completed: boolean;
-      }) => {
-        return {
-          ...task,
-          id: task.id,
-          content: task.title,
-          state: task.completed,
-        };
-      }
-    );
+    return data.map((task: APITask) => {
+      return {
+        ...task,
+        id: task.id,
+        content: task.title,
+        state: task.completed,
+      };
+    });
   }
 );
