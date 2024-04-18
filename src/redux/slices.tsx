@@ -89,34 +89,24 @@ export default todoSlice.reducer;
 export const fetchTasks = createAsyncThunk<Task[]>(
   "todo/fetchTasks",
   async () => {
-    const response = await fetch("https://jsonplaceholder.typicode.com/todos");
-    let data = await response.json();
-    data = data.filter(
-      (task: {
-        userId: number;
-        id: number;
-        title: string;
-        completed: boolean;
-      }) => {
-        return task.userId === 1;
-      }
+    const response = await fetch(
+      "https://jsonplaceholder.typicode.com/todos?userId=1&fbclid=IwZXh0bgNhZW0CMTAAAR3X63ah1YHccZ0QOOdnpMeVmbTBE3ouoIdd1fqoKr231dZTQ8_DVKWT_FM_aem_AcTxVflL5FrRfYUn3wp0Lt7_7rdoMXiTVaAG9Rph3m2jI7UOT-ygcQ-U38r_4OhEgHODHNXh0gBnsP3ufW4iaRl6"
     );
-    data = data.map(
+    let data = await response.json();
+    return data.map(
       (task: {
         userId: number;
         id: number;
         title: string;
         completed: boolean;
       }) => {
-        const new_task: Task = {
-          id: task.id.toString(),
+        return {
+          ...task,
+          id: task.id,
           content: task.title,
           state: task.completed,
         };
-        return new_task;
       }
     );
-    data = data as Task[];
-    return data;
   }
 );
