@@ -3,7 +3,7 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { Provider } from "react-redux";
-import { store_toolkit, persistor } from "./redux/store";
+import { todoStore, store_toolkit, persistor, store_toolkit_API } from "./redux/store";
 import { PersistGate } from "redux-persist/integration/react";
 
 const root = ReactDOM.createRoot(
@@ -11,10 +11,10 @@ const root = ReactDOM.createRoot(
 );
 
 root.render(
-  <Provider store={store_toolkit}>
-    <PersistGate loading={null} persistor={persistor}>
+  <Provider store={store_toolkit_API}>
+    {/* <PersistGate loading={null} persistor={persistor}> */}
       <App />
-    </PersistGate>
+    {/* </PersistGate> */}
   </Provider>
 );
 

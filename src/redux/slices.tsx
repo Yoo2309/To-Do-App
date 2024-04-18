@@ -2,13 +2,13 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { FilterTasks } from "./reducers";
 import { FilterOption, Task, ToDo } from "../types/Type";
+import { createAsyncThunk } from "@reduxjs/toolkit";
 
 const initialTask: ToDo = {
   tasks: [],
   current_tasks: [],
   filter_opt: FilterOption.All,
 };
-
 const todoSlice = createSlice({
   name: "todo",
   initialState: initialTask,
@@ -64,8 +64,18 @@ const todoSlice = createSlice({
       };
     },
   },
+  //fetch API
+  extraReducers: (builder) => {
+    builder.addCase(
+      fetchTasks.fulfilled,
+      (state, action: PayloadAction<Task[]>) => {
+        // Update state with fetched tasks
+        state.tasks = action.payload;
+        state.current_tasks = action.payload;
+      }
+    );
+  },
 });
-
 export const {
   add_tasks,
   delete_tasks,
@@ -74,3 +84,39 @@ export const {
   filter_tasks,
 } = todoSlice.actions;
 export default todoSlice.reducer;
+
+//fetch API func
+export const fetchTasks = createAsyncThunk<Task[]>(
+  "todo/fetchTasks",
+  async () => {
+    const response = await fetch("https://jsonplaceholder.typicode.com/todos");
+    let data = await response.json();
+    data = data.filter(
+      (task: {
+        userId: number;
+        id: number;
+        title: string;
+        completed: boolean;
+      }) => {
+        return task.userId === 1;
+      }
+    );
+    data = data.map(
+      (task: {
+        userId: number;
+        id: number;
+        title: string;
+        completed: boolean;
+      }) => {
+        const new_task: Task = {
+          id: task.id.toString(),
+          content: task.title,
+          state: task.completed,
+        };
+        return new_task;
+      }
+    );
+    data = data as Task[];
+    return data;
+  }
+);

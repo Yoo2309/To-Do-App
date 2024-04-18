@@ -1,9 +1,9 @@
-import TodoReduxToolkit from "./Component/ToDoRedux/ToDoReduxToolkit";
+import TodoReduxToolkitAPI from "./Component/ToDoRedux/TodoReduxToolkitAPI";
 
 function App() {
   return (
     <div className="App">
-      <TodoReduxToolkit/>
+      <TodoReduxToolkitAPI />
     </div>
   );
 }
